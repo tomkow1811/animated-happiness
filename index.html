@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Research Funding fEC & Joint Allocation Estimator</title>
+  <title>Research Grant fEC & Indexation Modelling Engine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -15,11 +15,12 @@
       --card-bg: #ffffff;
       --text: #24292f;
       --text-muted: #57606a;
-      --accent: #1f3a52;
+      --accent: #193247;
       --accent-light: #f0f4f8;
       --border: #d0d7de;
       --border-focus: #0969da;
       --alert-warn: #cf222e;
+      --success: #1a7f37;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,14 +30,14 @@
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding: 48px 16px 80px;
+      padding: 40px 16px 80px;
       display: flex;
       justify-content: center;
       -webkit-font-smoothing: antialiased;
     }
 
     .container {
-      max-width: 660px;
+      max-width: 680px;
       width: 100%;
     }
 
@@ -63,6 +64,7 @@
       border-radius: 6px;
       padding: 28px;
       box-shadow: 0 1px 3px rgba(31, 35, 40, 0.04);
+      margin-bottom: 16px;
     }
 
     .grid-2 {
@@ -88,7 +90,7 @@
 
     input, select {
       font-family: var(--font-mono);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       padding: 9px 12px;
       border: 1px solid var(--border);
       border-radius: 4px;
@@ -104,6 +106,35 @@
       box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
     }
 
+    /* Accordion / Optional section toggles */
+    .module-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .module-toggle input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .optional-box {
+      background: #fdfdfd;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    /* Summary Matrix */
     .summary-card {
       background: var(--accent-light);
       border: 1px solid #d8e2ec;
@@ -131,13 +162,13 @@
 
     .summary-value {
       font-family: var(--font-mono);
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 600;
       color: var(--accent);
     }
 
     .summary-value.secondary {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       color: #3b5064;
     }
 
@@ -174,7 +205,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin-top: 8px;
       margin-bottom: 24px;
       font-size: 0.88rem;
     }
@@ -200,6 +231,48 @@
       text-align: right;
     }
 
+    /* Action bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--accent);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #f6f8fa;
+      border-color: #8c959f;
+    }
+
+    .btn:active {
+      background: #ebecf0;
+    }
+
+    .copy-status {
+      font-size: 0.8rem;
+      color: var(--success);
+      font-weight: 500;
+      display: none;
+    }
+
     .disclaimer {
       font-size: 0.78rem;
       line-height: 1.5;
@@ -209,9 +282,10 @@
       margin-top: 24px;
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 540px) {
       .grid-2, .summary-card { grid-template-columns: 1fr; }
       .allocation-row { grid-template-columns: 1fr; }
+      .action-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
     }
   </style>
 </head>
@@ -219,18 +293,19 @@
 
   <div class="container">
     <header>
-      <h1>Research Funding fEC & Joint Allocation Estimator</h1>
-      <p>Full Economic Costing, multi-funder co-allocation splits, and multi-year indexation</p>
+      <h1>Research Grant fEC & Indexation Estimator</h1>
+      <p>Multi-funder co-allocations, exception-cost isolation, TRAC estimates, and in-flight indexation profiles</p>
     </header>
 
     <main class="card">
+      <!-- Primary Grant Input -->
       <div class="grid-2">
         <div class="field">
           <label for="amount">Headline Amount (£)</label>
-          <input type="number" id="amount" value="600000" step="10000">
+          <input type="number" id="amount" value="650000" step="10000">
         </div>
         <div class="field">
-          <label for="calcMode">Amount Entered Represents</label>
+          <label for="calcMode">Amount Represents</label>
           <select id="calcMode">
             <option value="fec">100% fEC (Total Project Cost)</option>
             <option value="award" selected>Award Value (Funder Contribution)</option>
@@ -240,16 +315,16 @@
 
       <div class="grid-2">
         <div class="field">
-          <label for="fecRate">Funder Rate (%)</label>
+          <label for="fecRate">Standard Contribution Rate</label>
           <select id="fecRate">
-            <option value="80" selected>80% (Standard fEC)</option>
-            <option value="100">100% (Direct Award / Exceptions)</option>
+            <option value="80" selected>80% (Standard Public Funding)</option>
+            <option value="100">100% (Direct Full Award)</option>
             <option value="75">75%</option>
-            <option value="50">50% (Co-Funded / Match)</option>
+            <option value="50">50% (Co-Funded / Partner Match)</option>
           </select>
         </div>
         <div class="field">
-          <label for="duration">Project Duration</label>
+          <label for="duration">Duration</label>
           <select id="duration">
             <option value="1">1 Year (12 months)</option>
             <option value="2">2 Years (24 months)</option>
@@ -260,74 +335,141 @@
         </div>
       </div>
 
-      <div class="grid-2">
+      <!-- Module Toggle 1: 100% Exceptions -->
+      <label class="module-toggle">
+        <input type="checkbox" id="toggleExceptions">
+        <span>Isolate 100% Exceptions (Equipment / Facility / Studentships)</span>
+      </label>
+
+      <div id="exceptionsBox" class="optional-box">
+        <div class="grid-2">
+          <div class="field">
+            <label for="exceptionAmount">100% Exception Headings (£)</label>
+            <input type="number" id="exceptionAmount" value="50000" step="5000">
+          </div>
+          <div class="field" style="justify-content: flex-end;">
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+              Exception costs are deducted prior to calculating 80% fEC, then added directly at 100% award.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module Toggle 2: TRAC Overhead Estimator -->
+      <label class="module-toggle">
+        <input type="checkbox" id="toggleTrac">
+        <span>University Indirects & Estates Benchmarking (TRAC)</span>
+      </label>
+
+      <div id="tracBox" class="optional-box">
+        <div class="grid-2">
+          <div class="field">
+            <label for="researcherFte">Direct Staff FTE</label>
+            <input type="number" id="researcherFte" value="1.5" step="0.1" min="0.1" max="20">
+          </div>
+          <div class="field">
+            <label for="tracBand">Institutional Band (£/FTE/yr)</label>
+            <select id="tracBand">
+              <option value="45000">Low / Regional (£45k/yr)</option>
+              <option value="55000" selected>National Average (£55k/yr)</option>
+              <option value="65000">High / London Weighting (£65k/yr)</option>
+            </select>
+          </div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+          Estimated Indirect & Estates baseline: <strong id="tracTotalText" style="font-family: var(--font-mono); color: var(--accent);">£247,500</strong> across project duration.
+        </p>
+      </div>
+
+      <!-- Indexation & Funding Governance Controls -->
+      <div class="grid-2" style="margin-top: 14px;">
         <div class="field">
-          <label for="inflation">Projected Annual Indexation (%)</label>
+          <label for="inflation">Annual Indexation Rate (%)</label>
           <input type="number" id="inflation" value="2.5" step="0.1">
         </div>
         <div class="field">
-          <label for="numFunders">Co-Funders Count</label>
-          <select id="numFunders">
-            <option value="1">1 Funder (Single Council)</option>
-            <option value="2" selected>2 Funders (Joint Funded)</option>
-            <option value="3">3 Funders</option>
-            <option value="4">4 Funders</option>
+          <label for="indexationProfile">Indexation Model</label>
+          <select id="indexationProfile">
+            <option value="midyear" selected>Fiscal Mid-Year (Treasury Standard)</option>
+            <option value="yearend">Compounded Year-End</option>
           </select>
         </div>
       </div>
 
-      <!-- Core Totals -->
+      <div class="grid-2">
+        <div class="field">
+          <label for="numFunders">Funder Governance</label>
+          <select id="numFunders">
+            <option value="1" selected>Single Lead Council (100%)</option>
+            <option value="2">Joint Funded (2 Partners)</option>
+            <option value="3">Joint Funded (3 Partners)</option>
+            <option value="4">Joint Funded (4 Partners)</option>
+          </select>
+        </div>
+        <div class="field" style="justify-content: flex-end;">
+          <div style="font-size: 0.78rem; color: var(--text-muted); padding-bottom: 6px;">
+            Effective Award Rate: <strong id="effectiveRateBadge" style="font-family: var(--font-mono); color: var(--accent);">80.0%</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Totals Summary Card -->
       <div class="summary-card">
         <div class="summary-block">
           <div class="summary-label" id="labelAward">Total Award Value</div>
-          <div class="summary-value" id="summaryAward">£600,000</div>
+          <div class="summary-value" id="summaryAward">£650,000</div>
         </div>
         <div class="summary-block">
           <div class="summary-label">100% Full Economic Cost (fEC)</div>
-          <div class="summary-value secondary" id="summaryFec">£750,000</div>
+          <div class="summary-value secondary" id="summaryFec">£812,500</div>
         </div>
         <div class="summary-block">
-          <div class="summary-label">Institutional Shortfall</div>
-          <div class="summary-value secondary" id="summaryInst">£150,000</div>
+          <div class="summary-label">Institutional Contribution (Shortfall)</div>
+          <div class="summary-value secondary" id="summaryInst">£162,500</div>
         </div>
         <div class="summary-block">
-          <div class="summary-label">Indexed Total Award Value</div>
-          <div class="summary-value" id="summaryIndexedAward">£622,922</div>
+          <div class="summary-label">Projected Indexed Award</div>
+          <div class="summary-value" id="summaryIndexedAward">£674,829</div>
         </div>
       </div>
 
-      <!-- Joint Funding Allocations -->
-      <div class="section-header">
-        <span>Funder Co-Allocation Share</span>
-        <span id="allocTotalBadge" style="font-family: var(--font-mono); font-weight: normal; font-size: 0.74rem;">Total: 100%</span>
-      </div>
-      <div id="allocWarning" class="alloc-warning">Warning: Funder shares must sum to 100% (currently <span id="currentTotalPct"></span>%)</div>
-      
-      <div id="fundersContainer">
-        <!-- Injected via JS -->
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Council / Funder</th>
-            <th class="mono">Split %</th>
-            <th class="mono">Base Contribution</th>
-            <th class="mono">Indexed Contribution</th>
-          </tr>
-        </thead>
-        <tbody id="funderBreakdownBody">
+      <!-- Joint Allocations Section (Hidden if Single Funder) -->
+      <div id="jointSection" style="display: none;">
+        <div class="section-header">
+          <span>Co-Funder Allocation Share</span>
+          <span id="allocTotalBadge" style="font-family: var(--font-mono); font-weight: normal; font-size: 0.74rem;">Total: 100%</span>
+        </div>
+        <div id="allocWarning" class="alloc-warning">Warning: Partner allocations must sum to 100% (currently <span id="currentTotalPct"></span>%)</div>
+        
+        <div id="fundersContainer">
           <!-- Injected via JS -->
-        </tbody>
-      </table>
+        </div>
 
-      <!-- Multi-Year Indexation Projection -->
-      <div class="section-header">Multi-Year Indexation Profile</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Council / Funder</th>
+              <th class="mono">Split %</th>
+              <th class="mono">Base Share</th>
+              <th class="mono">Indexed Share</th>
+            </tr>
+          </thead>
+          <tbody id="funderBreakdownBody">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Multi-Year Indexation Profile -->
+      <div class="section-header">
+        <span>Annual Indexation Profile</span>
+        <span id="profileModelBadge" style="font-family: var(--font-mono); font-weight: normal; font-size: 0.72rem; color: var(--text-muted);">Mid-Year Uplift</span>
+      </div>
       <table>
         <thead>
           <tr>
             <th>Project Year</th>
-            <th class="mono">Base Award</th>
+            <th class="mono">Base Allocation</th>
             <th class="mono">Indexation Uplift</th>
             <th class="mono">Indexed Award</th>
           </tr>
@@ -337,8 +479,20 @@
         </tbody>
       </table>
 
+      <!-- Export & Action Bar -->
+      <div class="action-bar">
+        <button type="button" class="btn" id="copyBtn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path>
+            <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+          </svg>
+          Copy Briefing Summary
+        </button>
+        <span class="copy-status" id="copyStatus">Copied to clipboard</span>
+      </div>
+
       <p class="disclaimer">
-        <strong>Guide & Planning Note:</strong> Figures generated are mathematical approximations intended solely for scenario planning and high-level envelope scoping. Actual indexation adjustments, allowable overheads, non-standard fEC rates (e.g., equipment or international partner allocations), and institutional costing models vary across research councils and universities. Consult institutional research support services for formal submissions.
+        <strong>Guide & Planning Note:</strong> Figures generated are mathematical approximations intended solely for scenario planning and pre-award scoping. Actual indexation adjustments, allowable overheads, non-standard fEC rates (e.g. major equipment thresholds or specific international allocations), and institutional TRAC estates metrics vary across research councils and universities. Consult institutional research support services for formal submissions.
       </p>
     </main>
   </div>
@@ -357,18 +511,34 @@
       { id: "External", name: "External / Industry Partner" }
     ];
 
+    // Core inputs
     const amountEl = document.getElementById('amount');
     const calcModeEl = document.getElementById('calcMode');
     const fecRateEl = document.getElementById('fecRate');
     const durationEl = document.getElementById('duration');
     const inflationEl = document.getElementById('inflation');
+    const indexationProfileEl = document.getElementById('indexationProfile');
     const numFundersEl = document.getElementById('numFunders');
 
+    // Modules
+    const toggleExceptions = document.getElementById('toggleExceptions');
+    const exceptionsBox = document.getElementById('exceptionsBox');
+    const exceptionAmountEl = document.getElementById('exceptionAmount');
+
+    const toggleTrac = document.getElementById('toggleTrac');
+    const tracBox = document.getElementById('tracBox');
+    const researcherFteEl = document.getElementById('researcherFte');
+    const tracBandEl = document.getElementById('tracBand');
+    const tracTotalText = document.getElementById('tracTotalText');
+
+    // UI Outputs
+    const jointSection = document.getElementById('jointSection');
     const summaryAwardEl = document.getElementById('summaryAward');
     const summaryFecEl = document.getElementById('summaryFec');
     const summaryInstEl = document.getElementById('summaryInst');
     const summaryIndexedAwardEl = document.getElementById('summaryIndexedAward');
-    const labelAwardEl = document.getElementById('labelAward');
+    const effectiveRateBadge = document.getElementById('effectiveRateBadge');
+    const profileModelBadge = document.getElementById('profileModelBadge');
 
     const fundersContainer = document.getElementById('fundersContainer');
     const funderBreakdownBody = document.getElementById('funderBreakdownBody');
@@ -376,6 +546,11 @@
     const allocWarning = document.getElementById('allocWarning');
     const currentTotalPct = document.getElementById('currentTotalPct');
     const allocTotalBadge = document.getElementById('allocTotalBadge');
+
+    const copyBtn = document.getElementById('copyBtn');
+    const copyStatus = document.getElementById('copyStatus');
+
+    let cachedSummaryData = {};
 
     function fmt(val) {
       return new Intl.NumberFormat('en-GB', {
@@ -385,14 +560,31 @@
       }).format(val);
     }
 
+    // Toggle modules
+    toggleExceptions.addEventListener('change', () => {
+      exceptionsBox.style.display = toggleExceptions.checked ? 'block' : 'none';
+      recalculate();
+    });
+
+    toggleTrac.addEventListener('change', () => {
+      tracBox.style.display = toggleTrac.checked ? 'block' : 'none';
+      recalculate();
+    });
+
     function renderFunderInputs() {
       const count = parseInt(numFundersEl.value, 10);
+      
+      if (count === 1) {
+        jointSection.style.display = 'none';
+        return;
+      }
+
+      jointSection.style.display = 'block';
       fundersContainer.innerHTML = '';
 
       const defaultSplits = {
-        1: [100],
         2: [50, 50],
-        3: [40, 30, 30],
+        3: [34, 33, 33],
         4: [25, 25, 25, 25]
       }[count] || [];
 
@@ -421,35 +613,72 @@
     function recalculate() {
       const rawAmount = parseFloat(amountEl.value) || 0;
       const mode = calcModeEl.value;
-      const ratePct = parseFloat(fecRateEl.value) || 80;
-      const rate = ratePct / 100;
+      const standardRatePct = parseFloat(fecRateEl.value) || 80;
+      const standardRate = standardRatePct / 100;
       const years = parseInt(durationEl.value, 10);
       const inflation = (parseFloat(inflationEl.value) || 0) / 100;
+      const idxModel = indexationProfileEl.value;
+      const hasExceptions = toggleExceptions.checked;
+      const exceptionAmount = hasExceptions ? (parseFloat(exceptionAmountEl.value) || 0) : 0;
+      const countFunders = parseInt(numFundersEl.value, 10);
 
+      // TRAC benchmark calculations
+      if (toggleTrac.checked) {
+        const fte = parseFloat(researcherFteEl.value) || 0;
+        const ratePerYear = parseFloat(tracBandEl.value) || 55000;
+        const tracTotal = fte * ratePerYear * years;
+        tracTotalText.textContent = fmt(tracTotal);
+      }
+
+      // Cost & Award Derivations
       let totalFec = 0;
       let totalAward = 0;
 
       if (mode === 'fec') {
         totalFec = rawAmount;
-        totalAward = totalFec * rate;
+        if (hasExceptions) {
+          const standardFecPool = Math.max(0, totalFec - exceptionAmount);
+          totalAward = (standardFecPool * standardRate) + exceptionAmount;
+        } else {
+          totalAward = totalFec * standardRate;
+        }
       } else {
         totalAward = rawAmount;
-        totalFec = rate > 0 ? (totalAward / rate) : 0;
+        if (hasExceptions) {
+          const standardAwardPool = Math.max(0, totalAward - exceptionAmount);
+          const standardFecPool = standardRate > 0 ? (standardAwardPool / standardRate) : 0;
+          totalFec = standardFecPool + exceptionAmount;
+        } else {
+          totalFec = standardRate > 0 ? (totalAward / standardRate) : 0;
+        }
       }
 
-      const instContribution = totalFec - totalAward;
-      labelAwardEl.textContent = `${ratePct}% Total Award Value`;
+      const instDeficit = Math.max(0, totalFec - totalAward);
+      const effectiveRate = totalFec > 0 ? ((totalAward / totalFec) * 100).toFixed(1) : standardRatePct.toFixed(1);
+      effectiveRateBadge.textContent = `${effectiveRate}%`;
 
-      // Multi-year Indexation calculation
+      // Multi-Year Indexation Projection
+      profileModelBadge.textContent = idxModel === 'midyear' ? 'Treasury Mid-Year' : 'Compounded Year-End';
       const annualBaseAward = totalAward / years;
       let cumulativeIndexed = 0;
       tableBody.innerHTML = '';
+      const yearRows = [];
 
       for (let y = 1; y <= years; y++) {
-        const compoundFactor = Math.pow(1 + inflation, y - 1);
+        let compoundFactor;
+        if (idxModel === 'midyear') {
+          // Mid-year uplift: uplift begins halfway through each funding period (Year 1 gets 0.5 year inflation)
+          compoundFactor = Math.pow(1 + inflation, (y - 0.5));
+        } else {
+          // Standard year-end compound
+          compoundFactor = Math.pow(1 + inflation, y - 1);
+        }
+
         const indexedAmount = annualBaseAward * compoundFactor;
         const uplift = indexedAmount - annualBaseAward;
         cumulativeIndexed += indexedAmount;
+
+        yearRows.push({ year: y, base: annualBaseAward, uplift, total: indexedAmount });
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -463,47 +692,104 @@
 
       summaryAwardEl.textContent = fmt(totalAward);
       summaryFecEl.textContent = fmt(totalFec);
-      summaryInstEl.textContent = fmt(instContribution);
+      summaryInstEl.textContent = fmt(instDeficit);
       summaryIndexedAwardEl.textContent = fmt(cumulativeIndexed);
 
-      // Funder breakdown calculations
-      const selects = document.querySelectorAll('.funder-select');
-      const pctInputs = document.querySelectorAll('.funder-pct');
-      let totalAllocPct = 0;
+      // Multi-Funder Allocations
+      let funderSplits = [];
+      if (countFunders > 1) {
+        const selects = document.querySelectorAll('.funder-select');
+        const pctInputs = document.querySelectorAll('.funder-pct');
+        let totalAllocPct = 0;
 
-      funderBreakdownBody.innerHTML = '';
+        funderBreakdownBody.innerHTML = '';
 
-      pctInputs.forEach((input, idx) => {
-        const pct = parseFloat(input.value) || 0;
-        totalAllocPct += pct;
-        const selectedCouncilId = selects[idx].value;
-        const councilObj = councils.find(c => c.id === selectedCouncilId) || { id: selectedCouncilId };
+        pctInputs.forEach((input, idx) => {
+          const pct = parseFloat(input.value) || 0;
+          totalAllocPct += pct;
+          const selectedCouncilId = selects[idx].value;
+          const councilObj = councils.find(c => c.id === selectedCouncilId) || { id: selectedCouncilId };
 
-        const funderBase = totalAward * (pct / 100);
-        const funderIndexed = cumulativeIndexed * (pct / 100);
+          const funderBase = totalAward * (pct / 100);
+          const funderIndexed = cumulativeIndexed * (pct / 100);
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${councilObj.id}</td>
-          <td class="mono">${pct}%</td>
-          <td class="mono">${fmt(funderBase)}</td>
-          <td class="mono">${fmt(funderIndexed)}</td>
-        `;
-        funderBreakdownBody.appendChild(row);
-      });
+          funderSplits.push({ council: councilObj.id, pct, base: funderBase, indexed: funderIndexed });
 
-      allocTotalBadge.textContent = `Total: ${totalAllocPct}%`;
-      if (Math.abs(totalAllocPct - 100) > 0.01) {
-        allocWarning.style.display = 'block';
-        currentTotalPct.textContent = totalAllocPct;
-        allocTotalBadge.style.color = 'var(--alert-warn)';
-      } else {
-        allocWarning.style.display = 'none';
-        allocTotalBadge.style.color = 'var(--text-muted)';
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${councilObj.id}</td>
+            <td class="mono">${pct}%</td>
+            <td class="mono">${fmt(funderBase)}</td>
+            <td class="mono">${fmt(funderIndexed)}</td>
+          `;
+          funderBreakdownBody.appendChild(row);
+        });
+
+        allocTotalBadge.textContent = `Total: ${totalAllocPct}%`;
+        if (Math.abs(totalAllocPct - 100) > 0.01) {
+          allocWarning.style.display = 'block';
+          currentTotalPct.textContent = totalAllocPct;
+          allocTotalBadge.style.color = 'var(--alert-warn)';
+        } else {
+          allocWarning.style.display = 'none';
+          allocTotalBadge.style.color = 'var(--text-muted)';
+        }
       }
+
+      // Cache for clipboard exporter
+      cachedSummaryData = {
+        years,
+        totalFec,
+        totalAward,
+        instDeficit,
+        cumulativeIndexed,
+        effectiveRate,
+        inflationRate: (inflation * 100).toFixed(1),
+        hasExceptions,
+        exceptionAmount,
+        funderSplits
+      };
     }
 
-    [amountEl, calcModeEl, fecRateEl, durationEl, inflationEl].forEach(el => {
+    // Clipboard Copy Handler
+    copyBtn.addEventListener('click', () => {
+      if (!cachedSummaryData.totalAward) return;
+
+      const d = cachedSummaryData;
+      let text = `RESEARCH GRANT FINANCIAL ENVELOPE SUMMARY\n`;
+      text += `--------------------------------------------------\n`;
+      text += `Project Duration:           ${d.years} Years (${d.years * 12} Months)\n`;
+      text += `100% Full Economic Cost:     ${fmt(d.totalFec)}\n`;
+      text += `Total Funder Award:         ${fmt(d.totalAward)} (${d.effectiveRate}% effective)\n`;
+      text += `Institutional Shortfall:    ${fmt(d.instDeficit)}\n`;
+      text += `Projected Indexed Award:    ${fmt(d.cumulativeIndexed)} (${d.inflationRate}% p.a.)\n`;
+
+      if (d.hasExceptions) {
+        text += `Dedicated 100% Exceptions:  ${fmt(d.exceptionAmount)}\n`;
+      }
+
+      if (d.funderSplits && d.funderSplits.length > 0) {
+        text += `\nCO-FUNDER ALLOCATION BREAKDOWN:\n`;
+        d.funderSplits.forEach(f => {
+          text += `- ${f.council.padEnd(12)}: ${String(f.pct).padStart(3)}% | Base: ${fmt(f.base)} | Indexed: ${fmt(f.indexed)}\n`;
+        });
+      }
+
+      text += `--------------------------------------------------\n`;
+      text += `Generated for scenario planning & institutional pre-award review.`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        copyStatus.style.display = 'inline';
+        setTimeout(() => {
+          copyStatus.style.display = 'none';
+        }, 2800);
+      });
+    });
+
+    [
+      amountEl, calcModeEl, fecRateEl, durationEl, inflationEl,
+      indexationProfileEl, exceptionAmountEl, researcherFteEl, tracBandEl
+    ].forEach(el => {
       el.addEventListener('input', recalculate);
     });
 
