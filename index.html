@@ -21,6 +21,7 @@
       --border-focus: #0969da;
       --alert-warn: #cf222e;
       --success: #1a7f37;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,8 +43,21 @@
       position: relative;
     }
 
+    /* Staggered load-in keyframes */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     header {
       margin-bottom: 24px;
+      animation: fadeInUp 0.5s var(--ease-out-expo) forwards;
     }
 
     h1 {
@@ -62,9 +76,11 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 28px;
-      box-shadow: 0 1px 3px rgba(31, 35, 40, 0.04);
+      box-shadow: 0 2px 10px rgba(31, 35, 40, 0.04);
+      animation: fadeInUp 0.6s var(--ease-out-expo) 0.08s forwards;
+      opacity: 0;
     }
 
     .grid-2 {
@@ -86,6 +102,11 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: var(--text-muted);
+      transition: color 0.15s ease;
+    }
+
+    .field:focus-within label {
+      color: var(--border-focus);
     }
 
     input, select {
@@ -93,43 +114,70 @@
       font-size: 0.92rem;
       padding: 9px 12px;
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 5px;
       background: #fafbfc;
       color: var(--text);
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    input:hover, select:hover {
+      border-color: #8c959f;
     }
 
     input:focus, select:focus {
       border-color: var(--border-focus);
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+      transform: translateY(-1px);
     }
 
     .module-toggle {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 12px 0;
+      margin: 14px 0 8px;
       cursor: pointer;
       user-select: none;
       font-size: 0.82rem;
       font-weight: 500;
       color: var(--accent);
+      transition: opacity 0.15s ease;
+    }
+
+    .module-toggle:hover {
+      opacity: 0.85;
     }
 
     .module-toggle input[type="checkbox"] {
       cursor: pointer;
       accent-color: var(--accent);
+      transform: scale(1.05);
+      transition: transform 0.15s ease;
+    }
+
+    /* Smooth accordion drawers */
+    .drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s var(--ease-out-expo);
+      overflow: hidden;
+    }
+
+    .drawer.open {
+      grid-template-rows: 1fr;
+    }
+
+    .drawer-content {
+      min-height: 0;
     }
 
     .optional-box {
       background: #fafbfc;
       border: 1px dashed var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 14px;
-      margin-bottom: 16px;
-      display: none;
+      margin: 8px 0 16px;
     }
 
     .error-hint {
@@ -137,8 +185,10 @@
       color: var(--alert-warn);
       margin-top: 4px;
       display: none;
+      animation: fadeInUp 0.2s ease;
     }
 
+    /* Summary Card with Rolling Numbers */
     .summary-card {
       background: var(--accent-light);
       border: 1px solid #d8e2ec;
@@ -148,6 +198,12 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 18px;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .summary-card:hover {
+      border-color: #b9d0e6;
+      box-shadow: 0 4px 12px rgba(25, 50, 71, 0.04);
     }
 
     .summary-block {
@@ -169,6 +225,8 @@
       font-size: 1.35rem;
       font-weight: 600;
       color: var(--accent);
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
     }
 
     .summary-value.secondary {
@@ -196,6 +254,7 @@
       grid-template-columns: 2fr 1fr;
       gap: 12px;
       margin-bottom: 10px;
+      animation: fadeInUp 0.25s var(--ease-out-expo) forwards;
     }
 
     .alloc-warning {
@@ -204,6 +263,7 @@
       margin-bottom: 12px;
       font-weight: 500;
       display: none;
+      animation: fadeInUp 0.2s ease;
     }
 
     table {
@@ -228,11 +288,17 @@
     td {
       padding: 9px 6px;
       border-bottom: 1px solid #edf0f2;
+      transition: background-color 0.15s ease;
+    }
+
+    tr:hover td {
+      background-color: #fafbfc;
     }
 
     td.mono, th.mono {
       font-family: var(--font-mono);
       text-align: right;
+      font-variant-numeric: tabular-nums;
     }
 
     .action-bar {
@@ -249,7 +315,7 @@
       font-size: 0.82rem;
       font-weight: 600;
       padding: 8px 14px;
-      border-radius: 4px;
+      border-radius: 5px;
       border: 1px solid var(--border);
       background: #ffffff;
       color: var(--accent);
@@ -257,12 +323,19 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
+      transition: all 0.2s var(--ease-out-expo);
     }
 
     .btn:hover {
       background: #f6f8fa;
       border-color: #8c959f;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
     }
 
     .btn-link {
@@ -273,6 +346,7 @@
       font-family: var(--font-mono);
       cursor: pointer;
       text-decoration: underline;
+      transition: color 0.15s ease;
     }
 
     .btn-link:hover {
@@ -283,7 +357,15 @@
       font-size: 0.8rem;
       color: var(--success);
       font-weight: 500;
-      display: none;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .copy-status.visible {
+      opacity: 1;
+      transform: translateX(0);
     }
 
     .disclaimer {
@@ -295,27 +377,40 @@
       margin-top: 24px;
     }
 
-    /* Minimal Game Modal */
+    /* Modal Animation */
     #gameModal {
-      display: none;
+      display: flex;
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(2px);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
       z-index: 999;
       align-items: center;
       justify-content: center;
       padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease-out-expo);
+    }
+
+    #gameModal.open {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .game-card {
       background: #ffffff;
-      border-radius: 6px;
+      border-radius: 8px;
       width: 100%;
       max-width: 440px;
       padding: 24px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      position: relative;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.2);
+      transform: scale(0.96) translateY(8px);
+      transition: transform 0.25s var(--ease-out-expo);
+    }
+
+    #gameModal.open .game-card {
+      transform: scale(1) translateY(0);
     }
 
     .game-header {
@@ -395,525 +490,86 @@
             <option value="1">1 Year (12 months)</option>
             <option value="2">2 Years (24 months)</option>
             <option value="3" selected>3 Years (36 months)</option>
-            <option value="4">4 Years (48 months)</option>
-            <option value="5">5 Years (60 months)</option>
-          </select>
-        </div>
-      </div>
+            <option value="4">4 Years (48Subtle, micro-animations elevate a tool from feeling like a static webpage to feeling like an engineered software instrument. 
 
-      <!-- Optional 100% Exception Headings -->
-      <label class="module-toggle">
-        <input type="checkbox" id="toggleExceptions">
-        <span>Isolate 100% Exceptions (Major Equipment / Specific Facility Costs)</span>
-      </label>
+Here are the four key animations added to this build:
 
-      <div id="exceptionsBox" class="optional-box">
-        <div class="field">
-          <label for="exceptionAmount">Dedicated 100% Exception Headings (£)</label>
-          <input type="number" id="exceptionAmount" value="50000" step="5000" min="0">
-          <div id="exceptionError" class="error-hint">Exception amount cannot exceed total project value.</div>
-        </div>
-      </div>
+1. **Live Number Rolling (Slot-machine / Count-up effect):** Whenever an input or slider changes, the currency figures roll smoothly to their new values over 250ms rather than snapping abruptly.
+2. **Smooth Expand & Collapse:** The co-funder allocations and 100% exception trays slide in and out with CSS cubic-bezier easing instead of appearing as a sudden jump.
+3. **Table Row Staggered Cascades:** When changing durations or multi-funder numbers, the breakdown rows slide up and fade into place with a subtle stagger.
+4. **Tactile Micro-interactions:** Focus rings expand softly on inputs, and the "Copy Summary" button gives immediate visual spring feedback on click.
 
-      <div class="grid-2">
-        <div class="field">
-          <label for="inflation">Projected Annual Indexation (%)</label>
-          <input type="number" id="inflation" value="2.5" step="0.1">
-        </div>
-        <div class="field">
-          <label for="numFunders">Funder Structure</label>
-          <select id="numFunders">
-            <option value="1" selected>Single Lead Council (100%)</option>
-            <option value="2">Joint Funded (2 Partners)</option>
-            <option value="3">Joint Funded (3 Partners)</option>
-            <option value="4">Joint Funded (4 Partners)</option>
-          </select>
-        </div>
-      </div>
+Here is the updated, drop-in replacement for your `index.html`:
 
-      <!-- Core Totals Summary -->
-      <div class="summary-card">
-        <div class="summary-block">
-          <div class="summary-label" id="labelAward">Total Award Value</div>
-          <div class="summary-value" id="summaryAward">£650,000</div>
-        </div>
-        <div class="summary-block">
-          <div class="summary-label">100% Full Economic Cost (fEC)</div>
-          <div class="summary-value secondary" id="summaryFec">£812,500</div>
-        </div>
-        <div class="summary-block">
-          <div class="summary-label">Institutional Shortfall</div>
-          <div class="summary-value secondary" id="summaryInst">£162,500</div>
-        </div>
-        <div class="summary-block">
-          <div class="summary-label">Projected Indexed Award</div>
-          <div class="summary-value" id="summaryIndexedAward">£674,829</div>
-        </div>
-      </div>
-
-      <!-- Co-Funder Allocations (Revealed for 2+ Funders) -->
-      <div id="jointSection" style="display: none;">
-        <div class="section-header">
-          <span>Co-Funder Allocation Share</span>
-          <span id="allocTotalBadge" style="font-family: var(--font-mono); font-weight: normal; font-size: 0.74rem;">Total: 100%</span>
-        </div>
-        <div id="allocWarning" class="alloc-warning">Warning: Funder shares must sum to 100% (currently <span id="currentTotalPct"></span>%)</div>
-        
-        <div id="fundersContainer"></div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Council / Funder</th>
-              <th class="mono">Split %</th>
-              <th class="mono">Base Contribution</th>
-              <th class="mono">Indexed Contribution</th>
-            </tr>
-          </thead>
-          <tbody id="funderBreakdownBody"></tbody>
-        </table>
-      </div>
-
-      <!-- Multi-Year Indexation Profile -->
-      <div class="section-header">
-        <span>Annual Indexation Profile</span>
-        <span style="font-family: var(--font-mono); font-weight: normal; font-size: 0.72rem; color: var(--text-muted);">Treasury Mid-Year Deflator</span>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Project Year</th>
-            <th class="mono">Base Award</th>
-            <th class="mono">Indexation Uplift</th>
-            <th class="mono">Indexed Award</th>
-          </tr>
-        </thead>
-        <tbody id="indexationTableBody"></tbody>
-      </table>
-
-      <!-- Footer & Action Bar -->
-      <div class="action-bar">
-        <div>
-          <button type="button" class="btn" id="copyBtn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path>
-              <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
-            </svg>
-            Copy Summary
-          </button>
-          <span class="copy-status" id="copyStatus">Copied to clipboard</span>
-        </div>
-        <button type="button" class="btn-link" id="openGameBtn">[recess: peer-review]</button>
-      </div>
-
-      <p class="disclaimer">
-        <strong>Guide & Planning Note:</strong> Figures generated are mathematical approximations intended solely for scenario planning and pre-award scoping. Actual indexation adjustments, allowable overheads, non-standard fEC rates (e.g., equipment thresholds or select partner costs), and institutional costing models vary across research councils and universities. Consult institutional research support services for formal submissions.
-      </p>
-    </main>
-  </div>
-
-  <!-- Peer Review Mini Arcade Modal -->
-  <div id="gameModal">
-    <div class="game-card">
-      <div class="game-header">
-        <h3>Peer Review Defense</h3>
-        <button type="button" class="btn-link" id="closeGameBtn">[close]</button>
-      </div>
-      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
-        Mouse/Touch to move research shield. Catch <strong>Grants</strong>, deflect <strong>Scope Creep</strong> and <strong>Audits</strong>.
-      </p>
-      <canvas id="gameCanvas" width="390" height="240"></canvas>
-      <div class="game-footer">
-        <span>Score: <span id="gameScore">0</span></span>
-        <span>Escaped: <span id="gameLives">3</span> / 3</span>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const councils = [
-      { id: "EPSRC", name: "EPSRC (Engineering & Physical Sciences)" },
-      { id: "BBSRC", name: "BBSRC (Biotechnology & Biological Sciences)" },
-      { id: "MRC", name: "MRC (Medical Research)" },
-      { id: "NERC", name: "NERC (Natural Environment)" },
-      { id: "ESRC", name: "ESRC (Economic & Social)" },
-      { id: "AHRC", name: "AHRC (Arts & Humanities)" },
-      { id: "STFC", name: "STFC (Science & Technology Facilities)" },
-      { id: "InnovateUK", name: "Innovate UK" },
-      { id: "ResearchEngland", name: "Research England" },
-      { id: "External", name: "External / Industry Partner" }
-    ];
-
-    const amountEl = document.getElementById('amount');
-    const calcModeEl = document.getElementById('calcMode');
-    const fecRateEl = document.getElementById('fecRate');
-    const durationEl = document.getElementById('duration');
-    const inflationEl = document.getElementById('inflation');
-    const numFundersEl = document.getElementById('numFunders');
-
-    const toggleExceptions = document.getElementById('toggleExceptions');
-    const exceptionsBox = document.getElementById('exceptionsBox');
-    const exceptionAmountEl = document.getElementById('exceptionAmount');
-    const exceptionError = document.getElementById('exceptionError');
-
-    const jointSection = document.getElementById('jointSection');
-    const summaryAwardEl = document.getElementById('summaryAward');
-    const summaryFecEl = document.getElementById('summaryFec');
-    const summaryInstEl = document.getElementById('summaryInst');
-    const summaryIndexedAwardEl = document.getElementById('summaryIndexedAward');
-    const labelAwardEl = document.getElementById('labelAward');
-
-    const fundersContainer = document.getElementById('fundersContainer');
-    const funderBreakdownBody = document.getElementById('funderBreakdownBody');
-    const tableBody = document.getElementById('indexationTableBody');
-    const allocWarning = document.getElementById('allocWarning');
-    const currentTotalPct = document.getElementById('currentTotalPct');
-    const allocTotalBadge = document.getElementById('allocTotalBadge');
-
-    const copyBtn = document.getElementById('copyBtn');
-    const copyStatus = document.getElementById('copyStatus');
-    let cachedSummary = {};
-
-    function fmt(val) {
-      return new Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: 'GBP',
-        maximumFractionDigits: 0
-      }).format(val);
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Grant fEC & Indexation Estimator</title>
+  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+  <link href="[https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap)" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: 'Roboto Mono', ui-monospace, Menlo, Consolas, monospace;
+      --bg: #f6f8fa;
+      --card-bg: #ffffff;
+      --text: #24292f;
+      --text-muted: #57606a;
+      --accent: #193247;
+      --accent-light: #f0f4f8;
+      --border: #d0d7de;
+      --border-focus: #0969da;
+      --alert-warn: #cf222e;
+      --success: #1a7f37;
+      --transition-standard: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    toggleExceptions.addEventListener('change', () => {
-      exceptionsBox.style.display = toggleExceptions.checked ? 'block' : 'none';
-      recalculate();
-    });
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    function renderFunderInputs() {
-      const count = parseInt(numFundersEl.value, 10);
-      if (count === 1) {
-        jointSection.style.display = 'none';
-        return;
-      }
-
-      jointSection.style.display = 'block';
-      fundersContainer.innerHTML = '';
-
-      const defaultSplits = {
-        2: [50, 50],
-        3: [34, 33, 33],
-        4: [25, 25, 25, 25]
-      }[count] || [];
-
-      for (let i = 0; i < count; i++) {
-        const row = document.createElement('div');
-        row.className = 'allocation-row';
-
-        let options = councils.map((c, idx) => 
-          `<option value="${c.id}" ${idx === i ? 'selected' : ''}>${c.name}</option>`
-        ).join('');
-
-        row.innerHTML = `
-          <select class="funder-select" data-index="${i}">
-            ${options}
-          </select>
-          <input type="number" class="funder-pct" data-index="${i}" value="${defaultSplits[i]}" step="5" min="0" max="100">
-        `;
-        fundersContainer.appendChild(row);
-      }
-
-      document.querySelectorAll('.funder-pct, .funder-select').forEach(el => {
-        el.addEventListener('input', recalculate);
-      });
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 48px 16px 80px;
+      display: flex;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
     }
 
-    function recalculate() {
-      const rawAmount = parseFloat(amountEl.value) || 0;
-      const mode = calcModeEl.value;
-      const standardRatePct = parseFloat(fecRateEl.value) || 80;
-      const standardRate = standardRatePct / 100;
-      const years = parseInt(durationEl.value, 10);
-      const inflation = (parseFloat(inflationEl.value) || 0) / 100;
-      const hasExceptions = toggleExceptions.checked;
-      let exceptionAmount = hasExceptions ? (parseFloat(exceptionAmountEl.value) || 0) : 0;
-
-      // Validation
-      if (hasExceptions && exceptionAmount > rawAmount) {
-        exceptionError.style.display = 'block';
-        exceptionAmount = rawAmount;
-      } else {
-        exceptionError.style.display = 'none';
-      }
-
-      let totalFec = 0;
-      let totalAward = 0;
-
-      if (mode === 'fec') {
-        totalFec = rawAmount;
-        if (hasExceptions) {
-          const standardPool = Math.max(0, totalFec - exceptionAmount);
-          totalAward = (standardPool * standardRate) + exceptionAmount;
-        } else {
-          totalAward = totalFec * standardRate;
-        }
-      } else {
-        totalAward = rawAmount;
-        if (hasExceptions) {
-          const standardAwardPool = Math.max(0, totalAward - exceptionAmount);
-          const standardFecPool = standardRate > 0 ? (standardAwardPool / standardRate) : 0;
-          totalFec = standardFecPool + exceptionAmount;
-        } else {
-          totalFec = standardRate > 0 ? (totalAward / standardRate) : 0;
-        }
-      }
-
-      const instDeficit = Math.max(0, totalFec - totalAward);
-      const effectiveRate = totalFec > 0 ? ((totalAward / totalFec) * 100).toFixed(1) : standardRatePct.toFixed(1);
-      labelAwardEl.textContent = `${effectiveRate}% Award Value`;
-
-      // Multi-year Indexation using Treasury Mid-Year Standard
-      const annualBaseAward = totalAward / years;
-      let cumulativeIndexed = 0;
-      tableBody.innerHTML = '';
-
-      for (let y = 1; y <= years; y++) {
-        const compoundFactor = Math.pow(1 + inflation, (y - 0.5));
-        const indexedAmount = annualBaseAward * compoundFactor;
-        const uplift = indexedAmount - annualBaseAward;
-        cumulativeIndexed += indexedAmount;
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>Year ${y}</td>
-          <td class="mono">${fmt(annualBaseAward)}</td>
-          <td class="mono">+${fmt(uplift)}</td>
-          <td class="mono">${fmt(indexedAmount)}</td>
-        `;
-        tableBody.appendChild(row);
-      }
-
-      summaryAwardEl.textContent = fmt(totalAward);
-      summaryFecEl.textContent = fmt(totalFec);
-      summaryInstEl.textContent = fmt(instDeficit);
-      summaryIndexedAwardEl.textContent = fmt(cumulativeIndexed);
-
-      // Funder breakdown
-      const countFunders = parseInt(numFundersEl.value, 10);
-      let funderSplits = [];
-
-      if (countFunders > 1) {
-        const selects = document.querySelectorAll('.funder-select');
-        const pctInputs = document.querySelectorAll('.funder-pct');
-        let totalAllocPct = 0;
-
-        funderBreakdownBody.innerHTML = '';
-
-        pctInputs.forEach((input, idx) => {
-          const pct = parseFloat(input.value) || 0;
-          totalAllocPct += pct;
-          const selectedCouncilId = selects[idx].value;
-          const councilObj = councils.find(c => c.id === selectedCouncilId) || { id: selectedCouncilId };
-
-          const funderBase = totalAward * (pct / 100);
-          const funderIndexed = cumulativeIndexed * (pct / 100);
-
-          funderSplits.push({ council: councilObj.id, pct, base: funderBase, indexed: funderIndexed });
-
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${councilObj.id}</td>
-            <td class="mono">${pct}%</td>
-            <td class="mono">${fmt(funderBase)}</td>
-            <td class="mono">${fmt(funderIndexed)}</td>
-          `;
-          funderBreakdownBody.appendChild(row);
-        });
-
-        allocTotalBadge.textContent = `Total: ${totalAllocPct}%`;
-        if (Math.abs(totalAllocPct - 100) > 0.01) {
-          allocWarning.style.display = 'block';
-          currentTotalPct.textContent = totalAllocPct;
-          allocTotalBadge.style.color = 'var(--alert-warn)';
-        } else {
-          allocWarning.style.display = 'none';
-          allocTotalBadge.style.color = 'var(--text-muted)';
-        }
-      }
-
-      cachedSummary = {
-        years,
-        totalFec,
-        totalAward,
-        instDeficit,
-        cumulativeIndexed,
-        effectiveRate,
-        inflationRate: (inflation * 100).toFixed(1),
-        hasExceptions,
-        exceptionAmount,
-        funderSplits
-      };
+    .container {
+      max-width: 660px;
+      width: 100%;
+      position: relative;
+      animation: fadeInPage 0.4s ease-out forwards;
     }
 
-    copyBtn.addEventListener('click', () => {
-      if (!cachedSummary.totalAward) return;
-      const d = cachedSummary;
-      let text = `RESEARCH GRANT FINANCIAL ENVELOPE SUMMARY\n`;
-      text += `--------------------------------------------------\n`;
-      text += `Duration:                 ${d.years} Years (${d.years * 12} Months)\n`;
-      text += `100% Full Economic Cost:   ${fmt(d.totalFec)}\n`;
-      text += `Total Funder Award:       ${fmt(d.totalAward)} (${d.effectiveRate}% effective)\n`;
-      text += `Institutional Shortfall:  ${fmt(d.instDeficit)}\n`;
-      text += `Projected Indexed Award:  ${fmt(d.cumulativeIndexed)} (${d.inflationRate}% mid-year)\n`;
-
-      if (d.hasExceptions) {
-        text += `Dedicated 100% Exceptions: ${fmt(d.exceptionAmount)}\n`;
-      }
-
-      if (d.funderSplits && d.funderSplits.length > 0) {
-        text += `\nCO-FUNDER ALLOCATION BREAKDOWN:\n`;
-        d.funderSplits.forEach(f => {
-          text += `- ${f.council.padEnd(12)}: ${String(f.pct).padStart(3)}% | Base: ${fmt(f.base)} | Indexed: ${fmt(f.indexed)}\n`;
-        });
-      }
-      text += `--------------------------------------------------\n`;
-
-      navigator.clipboard.writeText(text).then(() => {
-        copyStatus.style.display = 'inline';
-        setTimeout(() => copyStatus.style.display = 'none', 2500);
-      });
-    });
-
-    [amountEl, calcModeEl, fecRateEl, durationEl, inflationEl, exceptionAmountEl].forEach(el => {
-      el.addEventListener('input', recalculate);
-    });
-
-    numFundersEl.addEventListener('change', () => {
-      renderFunderInputs();
-      recalculate();
-    });
-
-    renderFunderInputs();
-    recalculate();
-
-    // ==========================================
-    // Minimalist Arcade Game: Peer Review Defense
-    // ==========================================
-    const gameModal = document.getElementById('gameModal');
-    const openGameBtn = document.getElementById('openGameBtn');
-    const closeGameBtn = document.getElementById('closeGameBtn');
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('gameScore');
-    const livesEl = document.getElementById('gameLives');
-
-    let gameActive = false;
-    let score = 0;
-    let lives = 3;
-    let playerX = 170;
-    const paddleWidth = 60;
-    const paddleHeight = 8;
-    let items = [];
-    let spawnTimer = 0;
-
-    const obstacleLabels = ["REVISION", "AUDIT", "CREEP", "DEFICIT"];
-
-    openGameBtn.addEventListener('click', () => {
-      gameModal.style.display = 'flex';
-      resetGame();
-      gameActive = true;
-      requestAnimationFrame(gameLoop);
-    });
-
-    closeGameBtn.addEventListener('click', () => {
-      gameModal.style.display = 'none';
-      gameActive = false;
-    });
-
-    function resetGame() {
-      score = 0;
-      lives = 3;
-      items = [];
-      scoreEl.textContent = score;
-      livesEl.textContent = lives;
+    @keyframes fadeInPage {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    canvas.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const root = document.documentElement;
-      const mouseX = e.clientX - rect.left;
-      playerX = Math.max(0, Math.min(canvas.width - paddleWidth, mouseX - paddleWidth / 2));
-    });
-
-    canvas.addEventListener('touchmove', (e) => {
-      if (!e.touches[0]) return;
-      const rect = canvas.getBoundingClientRect();
-      const touchX = e.touches[0].clientX - rect.left;
-      playerX = Math.max(0, Math.min(canvas.width - paddleWidth, touchX - paddleWidth / 2));
-      e.preventDefault();
-    }, { passive: false });
-
-    function gameLoop() {
-      if (!gameActive) return;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Spawn falling items
-      spawnTimer++;
-      if (spawnTimer % 45 === 0) {
-        const isGood = Math.random() > 0.45;
-        items.push({
-          x: Math.random() * (canvas.width - 40) + 10,
-          y: -10,
-          speed: 1.8 + Math.random() * 1.5,
-          isGood: isGood,
-          text: isGood ? "£ AWARD" : obstacleLabels[Math.floor(Math.random() * obstacleLabels.length)]
-        });
-      }
-
-      // Draw player shield
-      ctx.fillStyle = '#60a5fa';
-      ctx.fillRect(playerX, canvas.height - 20, paddleWidth, paddleHeight);
-
-      // Update & render items
-      for (let i = items.length - 1; i >= 0; i--) {
-        const item = items[i];
-        item.y += item.speed;
-
-        ctx.font = '10px Roboto Mono';
-        ctx.fillStyle = item.isGood ? '#4ade80' : '#f87171';
-        ctx.fillText(item.text, item.x, item.y);
-
-        // Collision with paddle
-        if (
-          item.y >= canvas.height - 24 &&
-          item.y <= canvas.height - 12 &&
-          item.x + 20 >= playerX &&
-          item.x <= playerX + paddleWidth
-        ) {
-          if (item.isGood) {
-            score += 100;
-          } else {
-            lives--;
-          }
-          items.splice(i, 1);
-          scoreEl.textContent = score;
-          livesEl.textContent = lives;
-
-          if (lives <= 0) {
-            gameActive = false;
-            alert(`Review Complete. Final Research Grant Score: ${score}`);
-            gameModal.style.display = 'none';
-            return;
-          }
-          continue;
-        }
-
-        // Off bottom of screen
-        if (item.y > canvas.height + 10) {
-          items.splice(i, 1);
-        }
-      }
-
-      requestAnimationFrame(gameLoop);
+    header {
+      margin-bottom: 24px;
     }
-  </script>
-</body>
-</html>
+
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border
