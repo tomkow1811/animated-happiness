@@ -3,35 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UKRI fEC & Indexation Estimator</title>
+  <title>Research Funding fEC & Joint Allocation Estimator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --font: "Gill Sans", "Gill Sans MT", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
-      --bg: #f8f9fa;
-      --card: #ffffff;
-      --text: #1d2125;
-      --text-muted: #5e6c84;
-      --accent: #0b3d60;
-      --accent-light: #eef4f9;
-      --border: #dfe1e6;
-      --border-focus: #4c9aff;
+      --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: 'Roboto Mono', ui-monospace, Menlo, Consolas, monospace;
+      --bg: #f6f8fa;
+      --card-bg: #ffffff;
+      --text: #24292f;
+      --text-muted: #57606a;
+      --accent: #1f3a52;
+      --accent-light: #f0f4f8;
+      --border: #d0d7de;
+      --border-focus: #0969da;
+      --alert-warn: #cf222e;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: var(--font);
+      font-family: var(--font-sans);
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding: 40px 16px 80px;
+      padding: 48px 16px 80px;
       display: flex;
       justify-content: center;
+      -webkit-font-smoothing: antialiased;
     }
 
     .container {
-      max-width: 620px;
+      max-width: 660px;
       width: 100%;
     }
 
@@ -40,32 +45,31 @@
     }
 
     h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+      font-size: 1.45rem;
+      font-weight: 700;
       color: var(--accent);
-      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
     }
 
     header p {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: var(--text-muted);
     }
 
     .card {
-      background: var(--card);
+      background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 6px;
       padding: 28px;
-      box-shadow: 0 2px 8px rgba(9, 30, 66, 0.04);
-      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(31, 35, 40, 0.04);
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .field {
@@ -75,169 +79,139 @@
     }
 
     label {
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 0.76rem;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       color: var(--text-muted);
     }
 
     input, select {
-      font-family: var(--mono);
-      font-size: 0.98rem;
-      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      padding: 9px 12px;
       border: 1px solid var(--border);
-      border-radius: 5px;
+      border-radius: 4px;
       background: #fafbfc;
       color: var(--text);
       outline: none;
-      transition: all 0.15s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     input:focus, select:focus {
       border-color: var(--border-focus);
       background: #ffffff;
-      box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.2);
+      box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
     }
 
-    .toggle-row {
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-    }
-
-    /* Core Summary Blocks */
-    .summary-box {
+    .summary-card {
       background: var(--accent-light);
-      border: 1px solid #d0e2f2;
+      border: 1px solid #d8e2ec;
       border-radius: 6px;
-      padding: 18px 20px;
-      margin-bottom: 24px;
+      padding: 20px;
+      margin: 24px 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 18px;
     }
 
-    .summary-item {
+    .summary-block {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
 
     .summary-label {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       font-weight: 600;
       color: var(--accent);
     }
 
-    .summary-val {
-      font-family: var(--mono);
-      font-size: 1.45rem;
-      font-weight: 700;
+    .summary-value {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 600;
       color: var(--accent);
     }
 
-    .summary-val.subtle {
+    .summary-value.secondary {
       font-size: 1.15rem;
-      color: #3f556b;
+      color: #3b5064;
     }
 
-    /* Sections */
-    .section-title {
-      font-size: 0.82rem;
+    .section-header {
+      font-size: 0.8rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       color: var(--accent);
+      margin-top: 24px;
       margin-bottom: 12px;
       padding-bottom: 6px;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* Tables */
+    .allocation-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .alloc-warning {
+      font-size: 0.78rem;
+      color: var(--alert-warn);
+      margin-bottom: 12px;
+      font-weight: 500;
+      display: none;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 12px;
       margin-bottom: 24px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     th {
       text-align: left;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
       padding: 8px 6px;
       border-bottom: 1px solid var(--border);
+      font-weight: 600;
     }
 
     td {
       padding: 9px 6px;
-      border-bottom: 1px solid #f0f2f5;
+      border-bottom: 1px solid #edf0f2;
     }
 
-    td.mono {
-      font-family: var(--mono);
+    td.mono, th.mono {
+      font-family: var(--font-mono);
       text-align: right;
     }
 
-    th.mono {
-      text-align: right;
-    }
-
-    /* Envelope bar */
-    .breakdown-bar {
-      display: flex;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      background: #e9ecef;
-    }
-
-    .bar-di { background: #0b3d60; width: 45%; }
-    .bar-da { background: #2f7bbd; width: 20%; }
-    .bar-ind { background: #89b5dc; width: 35%; }
-
-    .legend {
-      display: flex;
-      gap: 16px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .legend-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    /* Disclaimer */
     .disclaimer {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       line-height: 1.5;
-      color: #7a869a;
+      color: #6e7781;
       border-left: 2px solid var(--border);
       padding-left: 12px;
-      margin-top: 12px;
+      margin-top: 24px;
     }
 
     @media (max-width: 520px) {
-      .grid-2, .summary-box { grid-template-columns: 1fr; }
-      .legend { flex-direction: column; gap: 6px; }
+      .grid-2, .summary-card { grid-template-columns: 1fr; }
+      .allocation-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -245,26 +219,35 @@
 
   <div class="container">
     <header>
-      <h1>UKRI fEC & Indexation Estimator</h1>
-      <p>Quick Full Economic Costing breakdowns, indexation profiles, and envelope projections</p>
+      <h1>Research Funding fEC & Joint Allocation Estimator</h1>
+      <p>Full Economic Costing, multi-funder co-allocation splits, and multi-year indexation</p>
     </header>
 
     <main class="card">
       <div class="grid-2">
         <div class="field">
           <label for="amount">Headline Amount (£)</label>
-          <input type="number" id="amount" value="500000" step="10000">
+          <input type="number" id="amount" value="600000" step="10000">
         </div>
         <div class="field">
-          <label for="calcMode">Amount Represents</label>
+          <label for="calcMode">Amount Entered Represents</label>
           <select id="calcMode">
-            <option value="fec">100% fEC (Full Cost)</option>
-            <option value="award">80% UKRI Contribution</option>
+            <option value="fec">100% fEC (Total Project Cost)</option>
+            <option value="award" selected>Award Value (Funder Contribution)</option>
           </select>
         </div>
       </div>
 
       <div class="grid-2">
+        <div class="field">
+          <label for="fecRate">Funder Rate (%)</label>
+          <select id="fecRate">
+            <option value="80" selected>80% (Standard fEC)</option>
+            <option value="100">100% (Direct Award / Exceptions)</option>
+            <option value="75">75%</option>
+            <option value="50">50% (Co-Funded / Match)</option>
+          </select>
+        </div>
         <div class="field">
           <label for="duration">Project Duration</label>
           <select id="duration">
@@ -275,113 +258,124 @@
             <option value="5">5 Years (60 months)</option>
           </select>
         </div>
+      </div>
+
+      <div class="grid-2">
         <div class="field">
           <label for="inflation">Projected Annual Indexation (%)</label>
           <input type="number" id="inflation" value="2.5" step="0.1">
         </div>
-      </div>
-
-      <!-- Core Totals Banner -->
-      <div class="summary-box">
-        <div class="summary-item">
-          <div class="summary-label">80% UKRI Award Value</div>
-          <div class="summary-val" id="summaryAward">£400,000</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">100% Full Economic Cost</div>
-          <div class="summary-val subtle" id="summaryFec">£500,000</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">Institutional Deficit (20%)</div>
-          <div class="summary-val subtle" id="summaryInst">£100,000</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">Award Value After Indexation</div>
-          <div class="summary-val" id="summaryIndexedAward">£415,281</div>
+        <div class="field">
+          <label for="numFunders">Co-Funders Count</label>
+          <select id="numFunders">
+            <option value="1">1 Funder (Single Council)</option>
+            <option value="2" selected>2 Funders (Joint Funded)</option>
+            <option value="3">3 Funders</option>
+            <option value="4">4 Funders</option>
+          </select>
         </div>
       </div>
 
-      <!-- Envelope Breakdown -->
-      <div class="section-title">Indicative Cost Envelope (Standard Profile)</div>
-      <div class="breakdown-bar">
-        <div class="bar-di"></div>
-        <div class="bar-da"></div>
-        <div class="bar-ind"></div>
+      <!-- Core Totals -->
+      <div class="summary-card">
+        <div class="summary-block">
+          <div class="summary-label" id="labelAward">Total Award Value</div>
+          <div class="summary-value" id="summaryAward">£600,000</div>
+        </div>
+        <div class="summary-block">
+          <div class="summary-label">100% Full Economic Cost (fEC)</div>
+          <div class="summary-value secondary" id="summaryFec">£750,000</div>
+        </div>
+        <div class="summary-block">
+          <div class="summary-label">Institutional Shortfall</div>
+          <div class="summary-value secondary" id="summaryInst">£150,000</div>
+        </div>
+        <div class="summary-block">
+          <div class="summary-label">Indexed Total Award Value</div>
+          <div class="summary-value" id="summaryIndexedAward">£622,922</div>
+        </div>
       </div>
-      <div class="legend">
-        <div class="legend-item"><span class="legend-dot" style="background:#0b3d60;"></span> Direct Incurred (~45%)</div>
-        <div class="legend-item"><span class="legend-dot" style="background:#2f7bbd;"></span> Direct Allocated (~20%)</div>
-        <div class="legend-item"><span class="legend-dot" style="background:#89b5dc;"></span> Indirect Costs (~35%)</div>
+
+      <!-- Joint Funding Allocations -->
+      <div class="section-header">
+        <span>Funder Co-Allocation Share</span>
+        <span id="allocTotalBadge" style="font-family: var(--font-mono); font-weight: normal; font-size: 0.74rem;">Total: 100%</span>
+      </div>
+      <div id="allocWarning" class="alloc-warning">Warning: Funder shares must sum to 100% (currently <span id="currentTotalPct"></span>%)</div>
+      
+      <div id="fundersContainer">
+        <!-- Injected via JS -->
       </div>
 
       <table>
         <thead>
           <tr>
-            <th>Cost Category</th>
-            <th class="mono">100% fEC</th>
-            <th class="mono">80% UKRI</th>
+            <th>Council / Funder</th>
+            <th class="mono">Split %</th>
+            <th class="mono">Base Contribution</th>
+            <th class="mono">Indexed Contribution</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>Directly Incurred (Staff, Travel, Consumables)</td>
-            <td class="mono" id="envDiFec">£225,000</td>
-            <td class="mono" id="envDiAward">£180,000</td>
-          </tr>
-          <tr>
-            <td>Directly Allocated (PI Time, Estates, Technicians)</td>
-            <td class="mono" id="envDaFec">£100,000</td>
-            <td class="mono" id="envDaAward">£80,000</td>
-          </tr>
-          <tr>
-            <td>Indirect Costs (Institutional Overheads)</td>
-            <td class="mono" id="envIndFec">£175,000</td>
-            <td class="mono" id="envIndAward">£140,000</td>
-          </tr>
+        <tbody id="funderBreakdownBody">
+          <!-- Injected via JS -->
         </tbody>
       </table>
 
       <!-- Multi-Year Indexation Projection -->
-      <div class="section-title">Annual Indexation Profile (Compounded)</div>
+      <div class="section-header">Multi-Year Indexation Profile</div>
       <table>
         <thead>
           <tr>
             <th>Project Year</th>
-            <th class="mono">Base Allocation</th>
+            <th class="mono">Base Award</th>
             <th class="mono">Indexation Uplift</th>
             <th class="mono">Indexed Award</th>
           </tr>
         </thead>
         <tbody id="indexationTableBody">
-          <!-- Dynamically populated -->
+          <!-- Injected via JS -->
         </tbody>
       </table>
 
       <p class="disclaimer">
-        <strong>Guide & Planning Note:</strong> Figures generated are approximations intended solely for scenario planning and pre-award scoping. Actual UKRI indexation rates, exception-funded headings (such as student stipends or select international co-investigator costs at 100%), equipment thresholds, and university TRAC/estates rates vary by call and institution. Consult your university research support service (RSS) or pre-award finance office for verified costings.
+        <strong>Guide & Planning Note:</strong> Figures generated are mathematical approximations intended solely for scenario planning and high-level envelope scoping. Actual indexation adjustments, allowable overheads, non-standard fEC rates (e.g., equipment or international partner allocations), and institutional costing models vary across research councils and universities. Consult institutional research support services for formal submissions.
       </p>
     </main>
   </div>
 
   <script>
+    const councils = [
+      { id: "EPSRC", name: "EPSRC (Engineering & Physical Sciences)" },
+      { id: "BBSRC", name: "BBSRC (Biotechnology & Biological Sciences)" },
+      { id: "MRC", name: "MRC (Medical Research)" },
+      { id: "NERC", name: "NERC (Natural Environment)" },
+      { id: "ESRC", name: "ESRC (Economic & Social)" },
+      { id: "AHRC", name: "AHRC (Arts & Humanities)" },
+      { id: "STFC", name: "STFC (Science & Technology Facilities)" },
+      { id: "InnovateUK", name: "Innovate UK" },
+      { id: "ResearchEngland", name: "Research England" },
+      { id: "External", name: "External / Industry Partner" }
+    ];
+
     const amountEl = document.getElementById('amount');
     const calcModeEl = document.getElementById('calcMode');
+    const fecRateEl = document.getElementById('fecRate');
     const durationEl = document.getElementById('duration');
     const inflationEl = document.getElementById('inflation');
+    const numFundersEl = document.getElementById('numFunders');
 
     const summaryAwardEl = document.getElementById('summaryAward');
     const summaryFecEl = document.getElementById('summaryFec');
     const summaryInstEl = document.getElementById('summaryInst');
     const summaryIndexedAwardEl = document.getElementById('summaryIndexedAward');
+    const labelAwardEl = document.getElementById('labelAward');
 
-    const envDiFecEl = document.getElementById('envDiFec');
-    const envDiAwardEl = document.getElementById('envDiAward');
-    const envDaFecEl = document.getElementById('envDaFec');
-    const envDaAwardEl = document.getElementById('envDaAward');
-    const envIndFecEl = document.getElementById('envIndFec');
-    const envIndAwardEl = document.getElementById('envIndAward');
-
+    const fundersContainer = document.getElementById('fundersContainer');
+    const funderBreakdownBody = document.getElementById('funderBreakdownBody');
     const tableBody = document.getElementById('indexationTableBody');
+    const allocWarning = document.getElementById('allocWarning');
+    const currentTotalPct = document.getElementById('currentTotalPct');
+    const allocTotalBadge = document.getElementById('allocTotalBadge');
 
     function fmt(val) {
       return new Intl.NumberFormat('en-GB', {
@@ -391,50 +385,71 @@
       }).format(val);
     }
 
+    function renderFunderInputs() {
+      const count = parseInt(numFundersEl.value, 10);
+      fundersContainer.innerHTML = '';
+
+      const defaultSplits = {
+        1: [100],
+        2: [50, 50],
+        3: [40, 30, 30],
+        4: [25, 25, 25, 25]
+      }[count] || [];
+
+      for (let i = 0; i < count; i++) {
+        const row = document.createElement('div');
+        row.className = 'allocation-row';
+
+        let options = councils.map((c, idx) => 
+          `<option value="${c.id}" ${idx === i ? 'selected' : ''}>${c.name}</option>`
+        ).join('');
+
+        row.innerHTML = `
+          <select class="funder-select" data-index="${i}">
+            ${options}
+          </select>
+          <input type="number" class="funder-pct" data-index="${i}" value="${defaultSplits[i]}" step="5" min="0" max="100">
+        `;
+        fundersContainer.appendChild(row);
+      }
+
+      document.querySelectorAll('.funder-pct, .funder-select').forEach(el => {
+        el.addEventListener('input', recalculate);
+      });
+    }
+
     function recalculate() {
       const rawAmount = parseFloat(amountEl.value) || 0;
       const mode = calcModeEl.value;
+      const ratePct = parseFloat(fecRateEl.value) || 80;
+      const rate = ratePct / 100;
       const years = parseInt(durationEl.value, 10);
-      const rate = (parseFloat(inflationEl.value) || 0) / 100;
+      const inflation = (parseFloat(inflationEl.value) || 0) / 100;
 
       let totalFec = 0;
       let totalAward = 0;
 
       if (mode === 'fec') {
         totalFec = rawAmount;
-        totalAward = totalFec * 0.8;
+        totalAward = totalFec * rate;
       } else {
         totalAward = rawAmount;
-        totalFec = totalAward / 0.8;
+        totalFec = rate > 0 ? (totalAward / rate) : 0;
       }
 
-      const instDeficit = totalFec - totalAward;
-
-      // Indicative breakdown allocations: 45% DI, 20% DA, 35% Indirect
-      const diFec = totalFec * 0.45;
-      const daFec = totalFec * 0.20;
-      const indFec = totalFec * 0.35;
-
-      envDiFecEl.textContent = fmt(diFec);
-      envDiAwardEl.textContent = fmt(diFec * 0.8);
-
-      envDaFecEl.textContent = fmt(daFec);
-      envDaAwardEl.textContent = fmt(daFec * 0.8);
-
-      envIndFecEl.textContent = fmt(indFec);
-      envIndAwardEl.textContent = fmt(indFec * 0.8);
+      const instContribution = totalFec - totalAward;
+      labelAwardEl.textContent = `${ratePct}% Total Award Value`;
 
       // Multi-year Indexation calculation
       const annualBaseAward = totalAward / years;
-      let cumulativeIndexedAward = 0;
+      let cumulativeIndexed = 0;
       tableBody.innerHTML = '';
 
       for (let y = 1; y <= years; y++) {
-        // Compound inflation formula
-        const compoundFactor = Math.pow(1 + rate, y - 1);
+        const compoundFactor = Math.pow(1 + inflation, y - 1);
         const indexedAmount = annualBaseAward * compoundFactor;
         const uplift = indexedAmount - annualBaseAward;
-        cumulativeIndexedAward += indexedAmount;
+        cumulativeIndexed += indexedAmount;
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -448,14 +463,56 @@
 
       summaryAwardEl.textContent = fmt(totalAward);
       summaryFecEl.textContent = fmt(totalFec);
-      summaryInstEl.textContent = fmt(instDeficit);
-      summaryIndexedAwardEl.textContent = fmt(cumulativeIndexedAward);
+      summaryInstEl.textContent = fmt(instContribution);
+      summaryIndexedAwardEl.textContent = fmt(cumulativeIndexed);
+
+      // Funder breakdown calculations
+      const selects = document.querySelectorAll('.funder-select');
+      const pctInputs = document.querySelectorAll('.funder-pct');
+      let totalAllocPct = 0;
+
+      funderBreakdownBody.innerHTML = '';
+
+      pctInputs.forEach((input, idx) => {
+        const pct = parseFloat(input.value) || 0;
+        totalAllocPct += pct;
+        const selectedCouncilId = selects[idx].value;
+        const councilObj = councils.find(c => c.id === selectedCouncilId) || { id: selectedCouncilId };
+
+        const funderBase = totalAward * (pct / 100);
+        const funderIndexed = cumulativeIndexed * (pct / 100);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${councilObj.id}</td>
+          <td class="mono">${pct}%</td>
+          <td class="mono">${fmt(funderBase)}</td>
+          <td class="mono">${fmt(funderIndexed)}</td>
+        `;
+        funderBreakdownBody.appendChild(row);
+      });
+
+      allocTotalBadge.textContent = `Total: ${totalAllocPct}%`;
+      if (Math.abs(totalAllocPct - 100) > 0.01) {
+        allocWarning.style.display = 'block';
+        currentTotalPct.textContent = totalAllocPct;
+        allocTotalBadge.style.color = 'var(--alert-warn)';
+      } else {
+        allocWarning.style.display = 'none';
+        allocTotalBadge.style.color = 'var(--text-muted)';
+      }
     }
 
-    [amountEl, calcModeEl, durationEl, inflationEl].forEach(input => {
-      input.addEventListener('input', recalculate);
+    [amountEl, calcModeEl, fecRateEl, durationEl, inflationEl].forEach(el => {
+      el.addEventListener('input', recalculate);
     });
 
+    numFundersEl.addEventListener('change', () => {
+      renderFunderInputs();
+      recalculate();
+    });
+
+    renderFunderInputs();
     recalculate();
   </script>
 </body>
